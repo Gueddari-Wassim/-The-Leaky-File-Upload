@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model StoredFile {
+  id          String   @id @default(uuid())
+  hash        String   @unique
+  storagePath String
+  size        Int
+  mimeType    String
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+
+  uploadRefs  UploadRef[]
+}
+
+model UploadRef {
+  id           String   @id @default(uuid())
+  userId       String
+  originalName String
+  createdAt    DateTime @default(now())
+
+  storedFile   StoredFile @relation(fields: [storedFileId], references: [id], onDelete: Cascade)
+  storedFileId String
+}
